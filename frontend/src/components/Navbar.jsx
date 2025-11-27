@@ -8,23 +8,26 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="flex px-10 items-center justify-between py-5 font-medium">
-        <Link to={"/"} className="text-xl">
+      <div
+        className={`flex px-10 items-center justify-between py-5 font- bold ${
+          darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+        }  `}>
+        <Link to={"/"} className="text-4xl font-extrabold">
           Product Lister
         </Link>
-        <ul className=" sm:flex gap-5 text-sm  hidden text-gray-700">
+        <ul className=" sm:flex gap-5 text-sm  hidden ">
           <NavLink to="/" className="flex flex-col items-center gap-1">
-            <p>HOME</p>
-            <hr className="w-2/4 border-none h-[1.5px] hidden bg-gray-700" />
+            <p className="text-2xl">HOME</p>
+            <hr className="w-2/4 border-none h-[1.5px] hidden " />
           </NavLink>
 
-          <hr className="w-2/4 border-none h-[1.5px] hidden bg-gray-700" />
+          <hr className="w-4 border-none h-[1.5px] hidden " />
           <div onClick={toggleHandler} className="cursor-pointer">
             {" "}
             {darkMode ? (
-              <FaMoon className="w-4 h-4" />
+              <MdWbSunny className="w-7 h-7" />
             ) : (
-              <MdWbSunny className="w-4 h-4" />
+              <FaMoon className="w-7 h-7" />
             )}{" "}
           </div>
         </ul>

@@ -1,13 +1,17 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { use, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import ProductCard from "./ProductCard";
+import { ProductContext } from "../context/ProductContext";
 const Card = () => {
   const [products, setProducts] = useState([]);
   const observerTarget = useRef(null);
   const limit = 10;
   const [loading, setLoading] = useState(false);
   const [skip, setSkip] = useState(0);
+  // search query
 
+  const { searchQuery, priceState, setPriceState } = useContext(ProductContext);
+  console.log("Price State in Card:", priceState);
   const Product = async () => {
     if (loading) return;
     setLoading(true);
@@ -23,6 +27,7 @@ const Card = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     Product();
   }, [skip]);
@@ -45,17 +50,42 @@ const Card = () => {
       }
     };
   }, [loading]);
+  // filter products based on search query
 
+  const filteredProducts = products.filter((item) => {
+    if (!searchQuery) return true;
+
+    const query = searchQuery.toLowerCase();
+    return (
+      item.title?.toLowerCase().includes(query) ||
+      item.description?.toLowerCase().includes(query) ||
+      item.category?.toLowerCase().includes(query) ||
+      item.brand?.toLowerCase().includes(query)
+    );
+  });
+  // sort products based on priceState
+  if (priceState === "low-to-high") {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  } else if (priceState === "high-to-low") {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  }
   return (
     <div className="">
       {/* card code */}
+      {searchQuery && filteredProducts.length === 0 && (
+        <div className="text-center py-10 text-gray-500">
+          No products found for "{searchQuery}"
+        </div>
+      )}
 
-      <div className=" cursor-pointer  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-5">
-        {products.map((item) => (
+      {/* Card grid */}
+      <div className="cursor-pointer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-5">
+        {filteredProducts.map((item) => (
           <ProductCard key={item.id} product={item} />
         ))}
       </div>
-      <div ref={observerTarget}>Loading more...</div>
+
+      {!searchQuery && <div ref={observerTarget}>Loading more...</div>}
     </div>
   );
 };
