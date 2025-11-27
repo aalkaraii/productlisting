@@ -34,7 +34,7 @@ Data is fetched from the DummyJSON API.
 ```bash
 
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/aalkaraii/productlisting.git
 cd your-repo-name
 2️⃣ Install dependencies
 npm install
@@ -43,5 +43,5 @@ npm install
 npm run dev
 App runs at:
 
-http://localhost:5173
+http://localhost
 ```
