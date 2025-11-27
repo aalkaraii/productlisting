@@ -6,7 +6,7 @@ const ProductCard = ({ product }) => {
   return (
     <div
       className={`transition-transform duration-300 ease-in-out 
-               hover:scale-103 rounded-lg p-3 shadow-sm 
+               hover:scale-103 rounded-lg p-3 shadow-2xl 
         ${darkMode ? "bg-gray-600 text-white" : "bg-white text-black"}`}>
       <img
         src={product.thumbnail}

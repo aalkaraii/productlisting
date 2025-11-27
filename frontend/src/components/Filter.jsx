@@ -12,12 +12,12 @@ const Filter = () => {
       <label className="mr-2 font-medium">Sort by Price:</label>
       <select
         onClick={onClickHandler}
-        className={`border border-gray-300 rounded-md p-2 ${
+        className={`border border-gray-300 cursor-pointer rounded-md p-2 ${
           darkMode ? "bg-gray-800 text-white" : "bg-white text-black"
         }`}>
-        <option value="default">Default</option>
-        <option value="low-to-high">Low to High</option>
-        <option value="high-to-low">High to Low</option>
+        <option value="default cursor-pointer">Default</option>
+        <option value="low-to-high cursor-pointer">Low to High</option>
+        <option value="high-to-low cursor-pointer">High to Low</option>
       </select>
     </div>
   );
