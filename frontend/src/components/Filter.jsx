@@ -5,7 +5,6 @@ const Filter = () => {
   const { priceState, setPriceState, darkMode } = useContext(ProductContext);
   const onClickHandler = (e) => {
     setPriceState(e.target.value);
-    // You can add logic here to update the filterPrice in context
   };
   return (
     <div>

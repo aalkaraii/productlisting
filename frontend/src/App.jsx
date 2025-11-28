@@ -13,16 +13,17 @@ const App = () => {
   const { darkMode } = useContext(ProductContext);
   return (
     <div
-      className={`lg:px-40  sm:px-[5vm] md:px-[7vm]  xl:px-[11vm] 2xl:px-[13vm] min-h-screen ${
+      className={`px-4 sm:px-6 md:px-8 lg:px-16 xl:px-32 2xl:px-40 min-h-screen ${
         darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}>
       <Navbar />
-      <div className="flex flex-row justify-between items-center my-4">
+
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4 my-4">
         <SearchBar />
         <Filter />
       </div>
-      <Category />
 
+      <Category />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

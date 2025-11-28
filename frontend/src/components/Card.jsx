@@ -49,13 +49,11 @@ const Card = () => {
     }
   }, [skip, selectedCategory, loading, limit]);
 
-  // ✅ Reset everything when category changes AND fetch immediately
   useEffect(() => {
     setProducts([]);
     setSkip(0);
     setHasMore(true);
 
-    // ✅ Fetch immediately after reset
     const fetchInitial = async () => {
       setLoading(true);
       try {
@@ -85,14 +83,12 @@ const Card = () => {
     fetchInitial();
   }, [selectedCategory, limit]);
 
-  // ✅ Fetch more when skip changes (but not on initial load)
   useEffect(() => {
     if (skip > 0) {
       fetchProducts();
     }
   }, [skip, fetchProducts]);
 
-  // ✅ Intersection Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -115,7 +111,6 @@ const Card = () => {
     };
   }, [loading, hasMore, limit]);
 
-  // ✅ Filter and sort
   const processedProducts = React.useMemo(() => {
     let result = products;
 
