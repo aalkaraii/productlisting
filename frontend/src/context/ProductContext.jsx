@@ -7,10 +7,12 @@ export const ProductContext = createContext();
 const ProductContextProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceState, setPriceState] = useState("default");
+  const [priceState, setPriceState] = useState("Default");
   const toggleHandler = () => {
     setDarkMode((prev) => !prev);
   };
+  // category
+  const [selectedCategory, setSelectedCategory] = useState("defaultCategory");
 
   const value = {
     darkMode,
@@ -20,6 +22,8 @@ const ProductContextProvider = ({ children }) => {
     setSearchQuery,
     priceState,
     setPriceState,
+    selectedCategory,
+    setSelectedCategory,
   };
 
   return (

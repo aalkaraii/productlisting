@@ -7,12 +7,13 @@ import About from "./pages/Cart";
 import Collection from "./pages/Theme";
 import Filter from "./components/Filter";
 import { ProductContext } from "./context/ProductContext";
+import Category from "./components/Category";
 
 const App = () => {
   const { darkMode } = useContext(ProductContext);
   return (
     <div
-      className={`px-40  sm:px-[5vm] md:px-[7vm] lg:px-[9vm] xl:px-[11vm] 2xl:px-[13vm] min-h-screen ${
+      className={`lg:px-40  sm:px-[5vm] md:px-[7vm]  xl:px-[11vm] 2xl:px-[13vm] min-h-screen ${
         darkMode ? "bg-gray-900 text-white" : "bg-white text-black"
       }`}>
       <Navbar />
@@ -20,6 +21,7 @@ const App = () => {
         <SearchBar />
         <Filter />
       </div>
+      <Category />
 
       <Routes>
         <Route path="/" element={<Home />} />

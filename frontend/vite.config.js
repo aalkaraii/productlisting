@@ -5,15 +5,5 @@ import { copyFileSync } from "fs";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    {
-      name: "copy-redirects",
-      closeBundle() {
-        copyFileSync("public/_redirects", "dist/_redirects");
-      },
-    },
-  ],
-  publicDir: "public",
+  plugins: [react(), tailwindcss()],
 });

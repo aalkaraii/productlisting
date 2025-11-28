@@ -7,7 +7,9 @@ import ProductContextProvider from "./context/ProductContext.jsx";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ProductContextProvider>
-      <App />
+      <StrictMode>
+        <App />
+      </StrictMode>
     </ProductContextProvider>
   </BrowserRouter>
 );
