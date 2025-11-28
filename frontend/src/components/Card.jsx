@@ -16,53 +16,27 @@ const Card = () => {
   const [hasMore, setHasMore] = useState(true);
 
   const observerTarget = useRef(null);
+  const isFetchingRef = useRef(false);
   const limit = 10;
 
   const { searchQuery, priceState, selectedCategory } =
     useContext(ProductContext);
 
-  const fetchProducts = useCallback(async () => {
-    if (loading) return;
+  const fetchProducts = useCallback(
+    async (currentSkip, isInitial = false) => {
+      // Prevent multiple simultaneous fetches
+      if (isFetchingRef.current) return;
 
-    setLoading(true);
-    try {
-      const url =
-        !selectedCategory || selectedCategory === "defaultCategory"
-          ? `https://dummyjson.com/products?limit=${limit}&skip=${skip}`
-          : `https://dummyjson.com/products/category/${selectedCategory}?limit=${limit}&skip=${skip}`;
-
-      console.log("Fetching:", url);
-
-      const response = await axios.get(url);
-      const newProducts = response.data.products;
-
-      if (newProducts.length < limit) {
-        setHasMore(false);
-      }
-
-      setProducts((prev) => [...prev, ...newProducts]);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [skip, selectedCategory, loading, limit]);
-
-  useEffect(() => {
-    setProducts([]);
-    setSkip(0);
-    setHasMore(true);
-
-    const fetchInitial = async () => {
+      isFetchingRef.current = true;
       setLoading(true);
+
       try {
         const url =
           !selectedCategory || selectedCategory === "defaultCategory"
-            ? `https://dummyjson.com/products?limit=${limit}&skip=0`
-            : `https://dummyjson.com/products/category/${selectedCategory}?limit=${limit}&skip=0`;
+            ? `https://dummyjson.com/products?limit=${limit}&skip=${currentSkip}`
+            : `https://dummyjson.com/products/category/${selectedCategory}?limit=${limit}&skip=${currentSkip}`;
 
-        console.log("Initial fetch:", url);
+        console.log("Fetching:", url);
 
         const response = await axios.get(url);
         const newProducts = response.data.products;
@@ -71,28 +45,62 @@ const Card = () => {
           setHasMore(false);
         }
 
-        setProducts(newProducts);
+        setProducts((prev) => {
+          if (isInitial) {
+            // For initial fetch, replace everything
+            return newProducts;
+          }
+
+          // For infinite scroll, filter duplicates and append
+          const existingIds = new Set(prev.map((p) => p.id));
+          const uniqueNew = newProducts.filter((p) => !existingIds.has(p.id));
+
+          // Only append if we have unique items
+          if (uniqueNew.length === 0) {
+            setHasMore(false);
+            return prev;
+          }
+
+          return [...prev, ...uniqueNew];
+        });
       } catch (error) {
         console.error("Error fetching products:", error);
         setHasMore(false);
       } finally {
         setLoading(false);
+        isFetchingRef.current = false;
       }
-    };
+    },
+    [selectedCategory, limit]
+  );
 
-    fetchInitial();
-  }, [selectedCategory, limit]);
-
+  // Reset and fetch initial products when category changes
   useEffect(() => {
-    if (skip > 0) {
-      fetchProducts();
+    setProducts([]);
+    setSkip(0);
+    setHasMore(true);
+    isFetchingRef.current = false;
+
+    fetchProducts(0, true);
+  }, [selectedCategory, fetchProducts]);
+
+  // Handle infinite scroll
+  useEffect(() => {
+    if (skip > 0 && !isFetchingRef.current) {
+      fetchProducts(skip, false);
     }
   }, [skip, fetchProducts]);
 
+  // Intersection observer for infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loading && hasMore) {
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          hasMore &&
+          !isFetchingRef.current
+        ) {
           setSkip((prev) => prev + limit);
         }
       },
@@ -112,7 +120,7 @@ const Card = () => {
   }, [loading, hasMore, limit]);
 
   const processedProducts = React.useMemo(() => {
-    let result = products;
+    let result = [...products];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -126,9 +134,9 @@ const Card = () => {
     }
 
     if (priceState === "low-to-high") {
-      result = [...result].sort((a, b) => a.price - b.price);
+      result.sort((a, b) => a.price - b.price);
     } else if (priceState === "high-to-low") {
-      result = [...result].sort((a, b) => b.price - a.price);
+      result.sort((a, b) => b.price - a.price);
     }
 
     return result;
